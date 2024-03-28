@@ -1,7 +1,4 @@
-# Une partie de ce README.md a été faire avec Copilot Chat
-# Donc si quelque chose ne fonctionne pas c'est la faute de Copilot
-# Toutes les routes ont été testé et fonctionne
-# Pour le front j'en avait marre donc il y a que la gestion de `poll`
+# Une partie de ce README.md a été faire avec Copilot Chat<br />Donc si quelque chose ne fonctionne pas c'est la faute de Copilot<br />Toutes les routes ont été testé et fonctionne<br />Pour le front j'en avait marre donc il y a que la gestion de `poll`
 
 Le dns de mongo db est: `mongodb://localhost:27017/`
 Il faut juste faire une db nommée `poll` et le reste est automatique (normalement?)
