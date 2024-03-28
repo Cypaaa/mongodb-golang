@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+</head>
+
+<body class="is-flex is-flex-direction-column mt-6">
+    <p id="error" class="is-align-self-center has-text-danger">&nbsp;</p>
+    <form action="#" method="post" class="box m-6 is-flex is-flex-direction-column p-6">
+        {{ if .ID }}
+            <div class="is-align-self-flex-end" href="./do">
+                <a class="button is-primary is-narrow">Accéder au formulaire</a>
+            </div>
+        {{ end }}
+        <h1 class="title is-1">
+            {{ if .ID }}
+                Modifier
+            {{ else }}
+                Créer
+            {{ end }}
+            un formulaire
+        </h1>
+        <label class="label">
+            Nom
+            <input class="input" id="name" type="text" value="{{ .Name }}" required>
+        </label>
+        <label class="label">
+            Mot de passe
+            <input class="input" id="password" type="password">
+        </label>
+        <div class="is-align-self-flex-end mt-5">
+            {{ if .ID }}
+                <button onclick="sendFormDelete()" type="button" class="button is-danger">
+                    Supprimer
+                </button>
+            {{ end }}
+            <button onclick="sendForm()" type="button" class="button is-primary">
+                {{ if .ID }}
+                    Modifier
+                {{ else }}
+                    Créer
+                {{ end }}
+            </button>
+        </div>
+    </form>
+    <script>
+        const name = document.getElementById("name");
+        const password = document.getElementById("password");
+        const error = document.getElementById("error");
+        async function sendForm() {
+            // check if name is empty
+            if (name.value.length === 0) {
+                error.classList.remove("has-text-success");
+                error.classList.add("has-text-danger")
+                error.textContent = "Un nom est requis";
+                return
+            }
+
+            // send request
+            {{ if .ID }}
+                const resp = await fetch(window.location.pathname, {
+                    method: "PUT",
+                    body: JSON.stringify({ name: name.value, password: password.value })
+                });
+            {{ else }}
+                const resp = await fetch("/poll/new", {
+                    method: "POST",
+                    body: JSON.stringify({ name: name.value, password: password.value })
+                });
+            {{ end }}
+
+            // check response and handle it
+            switch (resp.status) {
+                case 200:
+                    {{ if .ID }}
+                        error.classList.remove("has-text-danger");
+                        error.classList.add("has-text-success")
+                        error.textContent = "Mise à jour réussie";
+                    {{ else }}
+                        let id = await resp.text();
+                        window.location.replace("/poll/" + id.substring(1, id.length - 1));
+                    {{ end }}
+                    break;
+                case 400:
+                    error.classList.remove("has-text-success");
+                    error.classList.add("has-text-danger")
+                    {{ if .ID }}
+                        error.textContent = "Le document à mettre a jour n'a pas été trouvé";
+                    {{ else }}
+                        error.textContent = "Un nom est requis";
+                    {{ end }}
+                    break;
+                case 401:
+                    error.classList.remove("has-text-success");
+                    error.classList.add("has-text-danger")
+                    error.textContent = "Le mot de passe est incorrect";
+                    break;
+                case 409:
+                    error.classList.remove("has-text-success");
+                    error.classList.add("has-text-danger")
+                    error.textContent = "Un formulaire avec ce nom existe déjà";
+                    break;
+            }
+        }
+
+        {{ if .ID }}
+            async function sendFormDelete() {
+                const shouldDelete = confirm("Êtes-vous sûr(e) de vouloir supprimer ce formulaire ?")
+                if (shouldDelete) {
+                    const resp = await fetch(window.location.pathname, {
+                        method: "DELETE",
+                        body: JSON.stringify({ password: password.value })
+                    });
+                }
+            }
+        {{ end }}
+    </script>
+</body>
+
+</html>
