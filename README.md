@@ -3,6 +3,9 @@
 # Toutes les routes ont été testé et fonctionne
 # Pour le front j'en avait marre donc il y a que la gestion de `poll`
 
+Le dns de mongo db est: `mongodb://localhost:27017/`
+Il faut juste faire une db nommée `poll` et le reste est automatique (normalement?)
+
 
 # API Routes
 
